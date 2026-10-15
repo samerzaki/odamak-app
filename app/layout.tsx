@@ -6,7 +6,7 @@ import { AppShell } from '@/components/layout/app-shell';
 import { Header } from '@/components/layout/header';
 import { absoluteUrl, SEO_CONFIG, SITE_URL } from '@/lib/seo-config';
 
-const ICONS_BASE_URL = 'https://cdn.odamak.com/images/icons';
+const ICONS_BASE_URL = 'https://cdn.odamak.com/assets/images/icons';
 
 const kufi = Noto_Kufi_Arabic({
   variable: '--font-kufi',

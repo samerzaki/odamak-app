@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, Menu, Search } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
 import { ThemeToggle } from './theme-toggle';
 import { LanguageSwitcher } from './language-switcher';
-import { QuickSearch } from './quick-search';
 import { NavSheet } from './nav-sheet';
 import { Logo } from './logo';
 import { useLanguage } from '@/contexts/language-context';
@@ -29,21 +28,8 @@ export function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const pathname = usePathname();
   const isRTL = language === 'ar';
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const chromeless = isChromelessPath(pathname);
-
-  useEffect(() => {
-    const openSearchWithShortcut = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        setShowMobileSearch(true);
-      }
-    };
-
-    document.addEventListener('keydown', openSearchWithShortcut);
-    return () => document.removeEventListener('keydown', openSearchWithShortcut);
-  }, []);
 
   // Auth pages render their own header inside components/auth/auth-shell.tsx.
   if (chromeless) {
@@ -77,27 +63,6 @@ export function Header() {
       </nav>
 
       <div className="flex-1" />
-
-      <DropdownMenu open={showMobileSearch} onOpenChange={setShowMobileSearch} modal={false}>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] border border-line !bg-white text-slate-700 transition-colors hover:border-gold hover:text-text md:w-auto md:gap-2 md:px-3 md:text-sm"
-            aria-label={isRTL ? 'بحث سريع' : 'Quick search'}
-          >
-            <Search className="h-4 w-4 md:h-[15px] md:w-[15px]" />
-            <span className="hidden md:inline">{isRTL ? 'بحث سريع' : 'Quick search'}</span>
-            <span className="hidden rounded-[5px] border border-line px-1 font-mono text-[11px] text-dim md:inline">⌘K</span>
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align={isRTL ? 'start' : 'end'}
-          sideOffset={8}
-          className="w-[calc(100vw-2rem)] overflow-visible rounded-[14px] border-line bg-panel p-3 shadow-card md:w-[22rem]"
-        >
-          <QuickSearch autoFocus />
-        </DropdownMenuContent>
-      </DropdownMenu>
 
       <div className="hidden md:flex items-center gap-2">
         <LanguageSwitcher />
@@ -139,11 +104,11 @@ export function Header() {
         </DropdownMenu>
       ) : (
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" asChild>
+            <Link href="/auth/login">{isRTL ? 'دخول' : 'Login'}</Link>
+          </Button>
           <Button size="sm" variant="inverse" asChild className="hidden md:inline-flex">
             <Link href="/auth/register">{isRTL ? 'إنشاء حساب' : 'Sign up'}</Link>
-          </Button>
-          <Button size="sm" variant="inverse" asChild className="md:hidden">
-            <Link href="/auth/login">{isRTL ? 'دخول' : 'Login'}</Link>
           </Button>
         </div>
       )}

@@ -134,17 +134,23 @@ export function formatSigned(value: number, digits: number = 2): string {
 }
 
 /**
- * Current time in Cairo (HH:mm:ss, Latin digits) for the live-market clock.
+ * Current time in Cairo with an English AM/PM marker for the live-market clock.
  */
 export function cairoClock(date: Date = new Date()): string {
-  return new Intl.DateTimeFormat('en-GB', {
+  const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Africa/Cairo',
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
     numberingSystem: 'latn',
-  }).format(date);
+  }).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? '00';
+  const hour24 = Number(value('hour'));
+  const hour12 = hour24 % 12 || 12;
+  const period = hour24 < 12 ? 'AM' : 'PM';
+
+  return `${String(hour12).padStart(2, '0')}:${value('minute')}:${value('second')} ${period}`;
 }
 
 /**

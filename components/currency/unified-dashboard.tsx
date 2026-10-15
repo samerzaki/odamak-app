@@ -7,6 +7,7 @@ import {
 } from "@/lib/mock-currency-data";
 import { BankRatesTable } from "./bank-rates-table";
 import { FxConverterCard } from "./fx-converter-card";
+import { ReadyConvertedAmountsCard } from "./ready-converted-amounts-card";
 import { useCurrencyAverages, useHighestBuyPrice, useCurrencyBanks } from '@/hooks/use-currency-prices';
 import { useLanguage } from "@/contexts/language-context";
 import { SegmentedControl } from "@/components/ui/segmented-control";
@@ -168,7 +169,10 @@ export function UnifiedDashboard({ initialData }: UnifiedDashboardProps) {
         </div>
 
         {/* Right column */}
-        <FxConverterCard fromCurrency={selectedCurrency} />
+        <div className="space-y-6">
+          <FxConverterCard fromCurrency={selectedCurrency} />
+          <ReadyConvertedAmountsCard currency={selectedCurrency} />
+        </div>
       </div>
     </div>
   );

@@ -1,14 +1,14 @@
 'use client';
 
-import { AlertCircle, Bell, Calculator } from 'lucide-react';
+import { AlertCircle, Calculator } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/language-context';
 import { useSilverOverview } from '@/hooks/use-silver-prices';
 import { SilverOverviewItem } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PageHeader } from '@/components/ui/page-header';
 import { Sparkline } from '@/components/ui/sparkline';
 import { ChangeChip } from '@/components/ui/change-badge';
+import { Button } from '@/components/ui/button';
 
 const SILVER_NAMES: Record<string, string> = {
   '800': 'Silver 800',
@@ -80,19 +80,8 @@ export default function SilverPage() {
     .filter((entry): entry is [string, SilverOverviewItem] => Boolean(entry[1]?.price))
     .map(([key, value]) => transformApiItem(key, value, isRTL));
 
-  const features = [
-    { icon: Calculator, title: isRTL ? 'حاسبة الفضة' : 'Silver Calculator', description: isRTL ? 'احسب قيمة الفضة بالوزن' : 'Calculate silver value by weight', href: '/silver/calculator' },
-    { icon: Bell, title: isRTL ? 'تنبيهات الأسعار' : 'Price Alerts', description: isRTL ? 'احصل على إشعارات عند تغير الأسعار' : 'Get notified on price changes', href: '/me/alerts' },
-  ];
-
   return (
     <div className="space-y-8">
-      <PageHeader
-        eyebrow={isRTL ? 'الفضة' : 'Silver'}
-        title={isRTL ? 'أسعار الفضة' : 'Silver Prices'}
-        lead={isRTL ? 'أسعار الفضة المحدثة لحظياً - جميع الأنواع' : 'Live silver prices - All types'}
-      />
-
       {isLoading ? (
         <PriceCardsSkeleton />
       ) : error || !data ? (
@@ -107,9 +96,17 @@ export default function SilverPage() {
         </div>
       ) : (
         <section aria-labelledby="silver-prices-title" dir={direction}>
-          <h2 id="silver-prices-title" className="mb-4 font-heading text-[18px] font-semibold text-text md:text-[20px]">
-            {isRTL ? 'أسعار الفضة حسب النوع' : 'Silver prices by type'}
-          </h2>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 id="silver-prices-title" className="font-heading text-[18px] font-semibold text-text md:text-[20px]">
+              {isRTL ? 'أسعار الفضة حسب النوع' : 'Silver prices by type'}
+            </h2>
+            <Button size="sm" asChild>
+              <Link href="/silver/calculator">
+                <Calculator className="h-4 w-4" />
+                {isRTL ? 'حاسبة الفضة' : 'Silver Calculator'}
+              </Link>
+            </Button>
+          </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
             {silverItems.map((item) => {
               const chartTone = item.trend === 'neutral' ? 'gold' : item.trend;
@@ -157,16 +154,6 @@ export default function SilverPage() {
           </div>
         </section>
       )}
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {features.map((feature) => (
-          <Link key={feature.href} href={feature.href} className="group card-surface p-6 transition-shadow hover:shadow-gold">
-            <div className="mb-4 inline-flex rounded-lg bg-gold-soft p-3"><feature.icon className="h-6 w-6 text-gold" /></div>
-            <h3 className="mb-2 font-heading text-lg font-bold text-text transition-colors group-hover:text-gold">{feature.title}</h3>
-            <p className="text-sm text-muted">{feature.description}</p>
-          </Link>
-        ))}
-      </div>
     </div>
   );
 }

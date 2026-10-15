@@ -2,7 +2,6 @@ import { ModernGoldPricesServer, ModernGoldPricesSkeleton } from '@/components/d
 import { UnifiedGoldChartServer } from '@/components/charts/unified-gold-chart-server';
 import { GlobalGoldHistory } from '@/components/charts/global-gold-history';
 import { AutoRefreshWrapper } from '@/components/dashboard/auto-refresh-wrapper';
-import { PageHeader } from '@/components/ui/page-header';
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo-config';
@@ -14,12 +13,6 @@ export default function GoldPricesPage() {
   return (
     <AutoRefreshWrapper>
       <div className="space-y-8">
-        <PageHeader
-          eyebrow="سوق الذهب"
-          title="أسعار الذهب التفصيلية"
-          lead="راقب أسعار عيارات الذهب الرئيسية بالجنيه المصري، ثم انتقل إلى الرسم البياني أو الحاسبة لمعرفة القيمة التقديرية حسب الوزن والعيار."
-        />
-
         <Suspense fallback={<ModernGoldPricesSkeleton />}>
           <ModernGoldPricesServer />
         </Suspense>

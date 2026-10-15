@@ -472,6 +472,16 @@
   html {
     overflow-y: scroll;
     overflow-x: hidden;
+    scrollbar-gutter: stable;
+  }
+
+  /* Radix Select locks scrolling through react-remove-scroll. Its default
+     scrollbar compensation adds a physical right margin to <body>, which
+     creates a visible strip next to the app in our RTL layout. The gutter
+     above already reserves that space, so no extra body offset is needed. */
+  html body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
   }
 
   body {

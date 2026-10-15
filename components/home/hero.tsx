@@ -10,7 +10,7 @@ import { StatTile } from '@/components/ui/stat-tile';
 import { LiveDot } from '@/components/ui/live-dot';
 import { Sparkline } from '@/components/ui/sparkline';
 import { ChangeChip, ChangeText } from '@/components/ui/change-badge';
-import { formatNumber, formatSigned, formatRelativeTime, cairoClock } from '@/lib/format';
+import { formatNumber, formatSigned, cairoClock } from '@/lib/format';
 import { useLanguage } from '@/contexts/language-context';
 import { PriceAlertModal } from '@/components/dashboard/price-alert-modal';
 import type { GoldOverviewItem } from '@/types';
@@ -19,7 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 export type GoldItemType = '24' | '21' | '18' | 'gold_pound' | 'ounce';
 
 const GOLD_ITEM_IMAGES: Record<GoldItemType, string> = {
-  '24': '/gold-items/bar.webp',
+  '24': '/gold-items/bar2.webp',
   '21': '/gold-items/ring.webp',
   '18': '/gold-items/necklace.webp',
   gold_pound: '/gold-items/coin.webp',
@@ -28,7 +28,7 @@ const GOLD_ITEM_IMAGES: Record<GoldItemType, string> = {
 
 function GoldItemIcon({ type }: { type: GoldItemType }) {
   return (
-    <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#fff8e7] ring-1 ring-amber-900/5 sm:size-11">
+    <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#fff8e7] ring-1 ring-amber-900/5 dark:bg-[#2b210e] dark:ring-amber-200/10 sm:size-11">
       <Image
         src={GOLD_ITEM_IMAGES[type]}
         alt=""
@@ -55,8 +55,6 @@ export interface HeroKaratRow {
 
 interface HeroProps {
   karat21: GoldOverviewItem | null;
-  lastCheckedAt?: string;
-  lastCheckedAtForHuman?: string;
   history7d: number[];
   rows: HeroKaratRow[];
 }
@@ -77,6 +75,7 @@ function getChangeTooltip(
 }
 
 function LiveClock() {
+  const { language } = useLanguage();
   const [time, setTime] = useState<string | null>(null);
 
   useEffect(() => {
@@ -85,10 +84,20 @@ function LiveClock() {
     return () => clearInterval(id);
   }, []);
 
-  return <span className="num text-[13px] text-text">{time ?? '--:--:--'}</span>;
+  const [digits, period] = (time ?? '--:--:--').split(' ');
+  const periodLabel = language === 'ar'
+    ? period === 'AM' ? 'صباحًا' : period === 'PM' ? 'مساءً' : ''
+    : period;
+
+  return (
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] text-text" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <span className="num" dir="ltr">{digits}</span>
+      {periodLabel && <span className="font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>{periodLabel}</span>}
+    </span>
+  );
 }
 
-export function Hero({ karat21, lastCheckedAt, lastCheckedAtForHuman, history7d, rows }: HeroProps) {
+export function Hero({ karat21, history7d, rows }: HeroProps) {
   const { language, t } = useLanguage();
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -101,15 +110,11 @@ export function Hero({ karat21, lastCheckedAt, lastCheckedAtForHuman, history7d,
     ? karat21.change.color
     : undefined;
   const heroChangeTooltip = getChangeTooltip(changePercent, changeColor, language);
-  const recordedAt = karat21?.last_checked.last_checked_at ?? lastCheckedAt;
-
   const validHistory = history7d.filter(Number.isFinite);
   const move7d =
     validHistory.length >= 2 && validHistory[0] !== 0
       ? ((validHistory[validHistory.length - 1] - validHistory[0]) / validHistory[0]) * 100
       : null;
-
-  const updatedAgo = lastCheckedAtForHuman || (recordedAt ? formatRelativeTime(recordedAt, language) : null);
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-11 py-7 md:py-10">
@@ -149,7 +154,6 @@ export function Hero({ karat21, lastCheckedAt, lastCheckedAtForHuman, history7d,
 
         <p className="text-[13px] text-muted mb-7">
           <span className="num">{formatSigned(changeValue, 0)}</span> {t.common.egp} {t.home2026.vsYesterday}
-          {updatedAgo && <> · {t.home2026.lastUpdate} {updatedAgo}</>}
         </p>
 
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-7">

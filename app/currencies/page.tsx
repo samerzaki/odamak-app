@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { UnifiedDashboardServer, UnifiedDashboardSkeleton } from "@/components/currency/unified-dashboard-server";
 import { AutoRefreshWrapper } from "@/components/dashboard/auto-refresh-wrapper";
-import { PageHeader } from "@/components/ui/page-header";
+import { CurrenciesPageHeader } from "./currencies-page-header";
 import type { Metadata } from "next";
 import { buildMetadata } from '@/lib/seo-config';
 
@@ -12,11 +12,7 @@ export default function CurrenciesPage() {
   return (
     <AutoRefreshWrapper>
       <div className="space-y-8">
-        <PageHeader
-          eyebrow="سوق العملات"
-          title="العملات في البنوك"
-          lead="قارن أسعار العملات المتاحة في البنوك المصرية والسوق الموازي، وراجع وقت آخر تحديث قبل إجراء أي معاملة."
-        />
+        <CurrenciesPageHeader />
 
         <Suspense fallback={<UnifiedDashboardSkeleton />}>
           <UnifiedDashboardServer />

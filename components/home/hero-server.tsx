@@ -38,8 +38,6 @@ export async function HeroServer() {
     return (
       <Hero
         karat21={karat21}
-        lastCheckedAt={karat21?.last_checked.last_checked_at}
-        lastCheckedAtForHuman={karat21?.last_checked.last_checked_at_for_human}
         history7d={karat21?.chart_points_7d ?? []}
         rows={rows}
       />

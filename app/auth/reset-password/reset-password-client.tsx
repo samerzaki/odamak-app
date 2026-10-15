@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useCallback, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/contexts/language-context";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { InlineAlert } from "@/components/ui/inline-alert";
 import { PasswordStrength } from "@/components/ui/password-strength";
 import { AuthShell } from "@/components/auth/auth-shell";
+import { Turnstile } from "@/components/auth/turnstile";
 import { resetPassword } from "@/lib/api-auth";
 import { CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 
@@ -28,6 +29,10 @@ function ResetPasswordContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileKey, setTurnstileKey] = useState(0);
+  const handleTurnstileVerify = useCallback((value: string) => setTurnstileToken(value), []);
+  const handleTurnstileExpire = useCallback(() => setTurnstileToken(""), []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +52,10 @@ function ResetPasswordContent() {
       setError(t.pages.resetPassword.errorInvalidLink);
       return;
     }
+    if (!turnstileToken) {
+      setError(t.common.securityCheckError);
+      return;
+    }
 
     setIsLoading(true);
 
@@ -56,7 +65,7 @@ function ResetPasswordContent() {
         token,
         password,
         password_confirmation: confirmPassword,
-        'cf-turnstile-response': getTurnstileToken(),
+        'cf-turnstile-response': turnstileToken,
       });
       setSuccess(true);
       setTimeout(() => {
@@ -65,6 +74,8 @@ function ResetPasswordContent() {
     } catch (err) {
       const message = err instanceof Error ? err.message : t.pages.resetPassword.errorDefault;
       setError(message);
+      setTurnstileToken("");
+      setTurnstileKey((value) => value + 1);
     }
 
     setIsLoading(false);
@@ -150,9 +161,11 @@ function ResetPasswordContent() {
           <p className="text-[12px] text-dim">{t.pages.resetPassword.passwordHint}</p>
         </div>
 
+        <Turnstile key={turnstileKey} onVerify={handleTurnstileVerify} onExpire={handleTurnstileExpire} language={language} action="reset-password" />
+
         {error && <InlineAlert variant="error">{error}</InlineAlert>}
 
-        <Button type="submit" className="w-full h-12" size="lg" disabled={isLoading}>
+        <Button type="submit" className="w-full h-12" size="lg" disabled={isLoading || !turnstileToken}>
           {isLoading ? t.pages.resetPassword.submitting : t.pages.resetPassword.submitButton}
         </Button>
       </form>
@@ -165,11 +178,6 @@ function ResetPasswordContent() {
       </div>
     </AuthShell>
   );
-}
-
-function getTurnstileToken(): string | undefined {
-  return process.env.NEXT_PUBLIC_TURNSTILE_TOKEN ||
-    (process.env.NODE_ENV === 'development' ? '1x0000000000000000000000000000000AA' : undefined);
 }
 
 export default function ResetPasswordPage() {

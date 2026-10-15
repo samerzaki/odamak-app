@@ -2,8 +2,12 @@
 
 import { Sparkline } from '@/components/ui/sparkline';
 import { ChangeChip } from '@/components/ui/change-badge';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useLanguage } from '@/contexts/language-context';
 import { translations, type Language } from '@/lib/translations';
+import { Calculator } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { ModernGoldDataItem } from '@/components/dashboard/modern-gold-prices-server';
 
@@ -31,6 +35,12 @@ function formatCardPrice(price: number, currency: string, locale: string) {
   }).format(price);
 }
 
+function getChangeTooltip(language: Language) {
+  return language === 'ar'
+    ? 'نسبة تغيّر السعر منذ بداية اليوم'
+    : 'Price change since the start of today';
+}
+
 interface GoldPriceCardsProps {
   goldData: ModernGoldDataItem[];
 }
@@ -56,9 +66,17 @@ export function GoldPriceCards({ goldData }: GoldPriceCardsProps) {
 
   return (
     <section aria-labelledby="gold-prices-title" dir={direction}>
-      <h2 id="gold-prices-title" className="mb-4 font-heading text-[18px] font-semibold text-text md:text-[20px]">
-        {t.gold.tableTitle}
-      </h2>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 id="gold-prices-title" className="font-heading text-[18px] font-semibold text-text md:text-[20px]">
+          {t.gold.tableTitle}
+        </h2>
+        <Button size="sm" asChild>
+          <Link href="/gold/calculator">
+            <Calculator className="h-4 w-4" />
+            {t.sidebar.goldCalculator}
+          </Link>
+        </Button>
+      </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {rows.map((item) => {
           const isOunce = item.nameKey === 'ounce';
@@ -69,11 +87,20 @@ export function GoldPriceCards({ goldData }: GoldPriceCardsProps) {
               <div className="flex w-full items-start justify-between gap-3" dir={direction}>
                 <div className="min-w-0" style={{ textAlign }}>
                   <h3 className="font-heading text-[14px] font-semibold text-text">{getName(item.nameKey, t)}</h3>
-                  <ChangeChip
-                    value={item.changePercent}
-                    tone={item.trend === 'neutral' ? undefined : item.trend}
-                    className="mt-1.5 !gap-0.5 !rounded-md !px-2 !py-1 !text-[10px] !leading-none"
-                  />
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="mt-1.5 inline-flex cursor-help">
+                          <ChangeChip
+                            value={item.changePercent}
+                            tone={item.trend === 'neutral' ? undefined : item.trend}
+                            className="!gap-0.5 !rounded-md !px-2 !py-1 !text-[10px] !leading-none"
+                          />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>{getChangeTooltip(displayLanguage)}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
 

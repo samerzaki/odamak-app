@@ -643,6 +643,7 @@ export interface Translations {
       cashback: string;
       optional: string;
       autoIfEmpty: string;
+      priceUnavailable: string;
       loadingPrices: string;
       errorTitle: string;
       errorMessage: string;
@@ -1485,6 +1486,7 @@ export const translations: Record<Language, Translations> = {
         cashback: 'كاش باك',
         optional: 'اختياري',
         autoIfEmpty: 'تلقائي إذا تركت فارغاً',
+        priceUnavailable: 'السعر غير متاح',
         loadingPrices: 'جاري تحميل أسعار الذهب...',
         errorTitle: 'خطأ في تحميل أسعار الذهب',
         errorMessage: 'فشل في تحميل أسعار الذهب من الخادم',
@@ -2324,6 +2326,7 @@ export const translations: Record<Language, Translations> = {
         cashback: 'Cashback',
         optional: 'Optional',
         autoIfEmpty: 'Auto if empty',
+        priceUnavailable: 'Price unavailable',
         loadingPrices: 'Loading gold prices...',
         errorTitle: 'Error loading gold prices',
         errorMessage: 'Failed to load gold prices from the server',

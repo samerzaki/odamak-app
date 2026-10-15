@@ -98,9 +98,9 @@ export function AuthShell({ variant = 'login', showTabs = true, title, subtitle,
         </div>
       </div>
 
-      <div className="hidden lg:flex lg:w-[520px] shrink-0 relative overflow-hidden bg-navy text-on-navy px-11 py-10 flex-col">
+      <div className="hidden lg:flex lg:w-[520px] shrink-0 relative overflow-hidden bg-gold text-on-gold px-11 py-10 flex-col">
         <div className="absolute -top-[70px] end-[-90px] w-[300px] h-[300px] rounded-full bg-warn/[0.18]" />
-        <div className="absolute -bottom-[120px] start-[-110px] w-[320px] h-[320px] rounded-full bg-gold/40" />
+        <div className="absolute -bottom-[120px] start-[-110px] w-[320px] h-[320px] rounded-full bg-white/[0.09]" />
 
         <div className="relative inline-flex items-center gap-2 bg-white/10 rounded-full px-3.5 py-1.5 text-[12.5px] w-fit">
           <LiveDot tone="up" size={7} />
@@ -110,7 +110,7 @@ export function AuthShell({ variant = 'login', showTabs = true, title, subtitle,
         <h2 className="relative mt-6 mb-2.5 font-heading text-[27px] font-bold leading-snug tracking-tight [text-wrap:pretty]">
           {variant === 'register' ? t.pages.authAside.registerTitle : t.pages.authAside.loginTitle}
         </h2>
-        <p className="relative text-[14px] text-on-navy/75 leading-[1.8] [text-wrap:pretty]">
+        <p className="relative text-[14px] text-on-gold/75 leading-[1.8] [text-wrap:pretty]">
           {variant === 'register' ? t.pages.authAside.registerSubtitle : t.pages.authAside.loginSubtitle}
         </p>
 
@@ -124,7 +124,7 @@ export function AuthShell({ variant = 'login', showTabs = true, title, subtitle,
                 </span>
                 <div>
                   <div className="text-[14px] font-semibold">{benefit.title}</div>
-                  <div className="text-[12.5px] text-on-navy/70 mt-0.5 leading-relaxed">{benefit.desc}</div>
+                  <div className="text-[12.5px] text-on-gold/70 mt-0.5 leading-relaxed">{benefit.desc}</div>
                 </div>
               </div>
             );
@@ -132,11 +132,11 @@ export function AuthShell({ variant = 'login', showTabs = true, title, subtitle,
         </div>
 
         <div className="relative mt-auto pt-6">
-          <div className="text-[12.5px] text-on-navy/60 mb-2.5">{t.pages.authAside.referencePrices}</div>
+          <div className="text-[12.5px] text-on-gold/60 mb-2.5">{t.pages.authAside.referencePrices}</div>
           <div className="grid grid-cols-3 gap-2.5">
             {referencePrices.map((p) => (
               <div key={p.label} className="bg-white/10 rounded-[13px] p-3">
-                <div className="text-[11.5px] text-on-navy/70">{p.label}</div>
+                <div className="text-[11.5px] text-on-gold/70">{p.label}</div>
                 <div className="num text-[18px] font-medium mt-0.5">
                   {p.item ? formatPriceWithCurrency(p.item.price.sell, p.item.currency) : '—'}
                 </div>

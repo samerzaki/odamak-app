@@ -206,7 +206,7 @@ export default function RegisterPage() {
           {isLoading ? t.pages.register.submitting : t.pages.register.submitButton}
         </Button>
 
-        <Turnstile onVerify={handleTurnstileVerify} onExpire={handleTurnstileExpire} language={language} />
+        <Turnstile onVerify={handleTurnstileVerify} onExpire={handleTurnstileExpire} language={language} action="register" />
       </form>
 
       <div className="mt-6 text-center text-[13.5px] text-muted">

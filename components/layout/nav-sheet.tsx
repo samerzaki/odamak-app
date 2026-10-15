@@ -30,9 +30,15 @@ export function NavSheet({ open, onClose }: NavSheetProps) {
   }, [pathname]);
 
   React.useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    const root = document.documentElement;
+    const previousOverflowY = root.style.overflowY;
+
+    // Lock the element that owns the page scrollbar. Together with the stable
+    // gutter in globals.css, this keeps the header and page container in place.
+    root.style.overflowY = open ? 'hidden' : previousOverflowY;
+
     return () => {
-      document.body.style.overflow = '';
+      root.style.overflowY = previousOverflowY;
     };
   }, [open]);
 

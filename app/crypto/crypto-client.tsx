@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { CryptoPriceCard } from '@/components/crypto/crypto-price-card';
+import { CryptoPriceCard, CryptoPriceCardSkeleton } from '@/components/crypto/crypto-price-card';
 import { CryptoMarketTable, CryptoMarketTableSkeleton } from '@/components/crypto/crypto-market-table';
 import { useCryptoPrices, useCryptoTop } from '@/hooks/use-crypto-prices';
 import { useLanguage } from '@/contexts/language-context';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Calculator } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import type { CryptoInitialData } from './crypto-featured-server';
 
 interface CryptoPageClientProps {
@@ -46,12 +48,20 @@ export function CryptoPageClient({ initialData }: CryptoPageClientProps) {
       {/* Featured Cryptos (Top 3) */}
       {effectiveTopCryptos && effectiveTopCryptos.length > 0 && (
         <section>
-          <h2 className="font-heading text-xl font-bold text-text mb-4">
-            {isRTL ? 'العملات المميزة' : 'Featured Cryptocurrencies'}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {effectiveTopCryptos.map((crypto) => (
-              <CryptoPriceCard key={crypto.id} crypto={crypto} />
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-heading text-xl font-bold text-text">
+              {isRTL ? 'العملات المميزة' : 'Featured Cryptocurrencies'}
+            </h2>
+            <Button size="sm" asChild>
+              <Link href="/crypto/calculator">
+                <Calculator className="h-4 w-4" />
+                {isRTL ? 'حاسبة العملات الرقمية' : 'Crypto Calculator'}
+              </Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {effectiveTopCryptos.map((crypto, index) => (
+              <CryptoPriceCard key={crypto.id} crypto={crypto} wideAtTablet={index === 2} />
             ))}
           </div>
         </section>
@@ -78,24 +88,13 @@ function LoadingState() {
   return (
     <div className="space-y-8">
       <div>
-        <div className="h-8 w-48 mb-4 bg-panel2 rounded animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="h-7 w-48 rounded bg-panel2 animate-pulse" />
+          <div className="h-9 w-40 rounded bg-panel2 animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="card-surface p-5">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-panel2 animate-pulse" />
-                    <div className="space-y-2">
-                      <div className="h-4 w-16 bg-panel2 rounded animate-pulse" />
-                      <div className="h-3 w-20 bg-panel2 rounded animate-pulse" />
-                    </div>
-                  </div>
-                </div>
-                <div className="h-10 w-32 bg-panel2 rounded animate-pulse" />
-                <div className="h-8 w-24 bg-panel2 rounded animate-pulse" />
-              </div>
-            </div>
+            <CryptoPriceCardSkeleton key={i} wideAtTablet={i === 3} />
           ))}
         </div>
       </div>

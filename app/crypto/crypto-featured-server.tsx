@@ -3,6 +3,7 @@ import { adaptCryptoTopItem, adaptCryptoApiItem, adaptCryptoPagination } from '@
 import { CryptoPageClient } from './crypto-client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CryptoMarketTableSkeleton } from '@/components/crypto/crypto-market-table';
+import { CryptoPriceCardSkeleton } from '@/components/crypto/crypto-price-card';
 import type { CryptoPrice, CryptoPaginatedResult } from '@/types';
 
 export interface CryptoInitialData {
@@ -26,7 +27,7 @@ export async function CryptoPageServer() {
     };
 
     return <CryptoPageClient initialData={initialData} />;
-  } catch (error) {
+  } catch {
     // Fall back to client-side fetching on error
     return <CryptoPageClient initialData={null} />;
   }
@@ -34,36 +35,19 @@ export async function CryptoPageServer() {
 
 export function CryptoPageSkeleton() {
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="space-y-8">
-        <div>
-          <Skeleton className="h-8 w-48 mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="card-surface p-5">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-16" />
-                        <Skeleton className="h-3 w-20" />
-                      </div>
-                    </div>
-                    <Skeleton className="h-5 w-12" />
-                  </div>
-                  <Skeleton className="h-10 w-32" />
-                  <Skeleton className="h-8 w-24" />
-                </div>
-              </div>
-            ))}
-          </div>
+    <div className="space-y-8">
+      <div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <Skeleton className="h-7 w-48" />
+          <Skeleton className="h-9 w-40" />
         </div>
-        <div>
-          <Skeleton className="h-8 w-48 mb-4" />
-          <CryptoMarketTableSkeleton />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <CryptoPriceCardSkeleton key={i} wideAtTablet={i === 3} />
+          ))}
         </div>
       </div>
+      <CryptoMarketTableSkeleton />
     </div>
   );
 }

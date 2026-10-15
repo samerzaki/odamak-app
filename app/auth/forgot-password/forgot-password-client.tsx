@@ -105,6 +105,7 @@ export default function ForgotPasswordPage() {
           onVerify={handleTurnstileVerify}
           onExpire={handleTurnstileExpire}
           language={isRTL ? "ar" : "en"}
+          action="forgot-password"
         />
 
         {error && <InlineAlert variant="error">{error}</InlineAlert>}
